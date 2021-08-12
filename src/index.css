@@ -1,0 +1,68 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Ubuntu', sans-serif;
+  }
+  
+  :root {
+    --primary-color: #08D9D6;
+    --secondary-color: #252A34;
+    --danger-color: #FF2E63;
+    --light-color: #EAEAEA;
+  }
+  
+  .primary-font {
+    font-family: "Open Sans", sans-serif;
+  }
+  
+  .primary-bg {
+    background-color: var(--primary-color);
+  }
+  
+  .secondary-bg {
+    background-color: var(--secondary-color);
+  }
+  
+  .danger-bg {
+    background-color: var(--danger-color);
+  }
+  
+  .light-bg {
+    background-color: var(--light-color);
+  }
+  
+  .white-bg {
+    background-color: white;
+  }
+  
+  .transparent-bg {
+    background-color: transparent;
+  }
+  
+  .color-primary {
+    color: var(--primary-color);
+  }
+  
+  .color-secondary {
+    color: var(--secondary-color);
+  }
+  
+  .color-danger {
+    color: var(--danger-color);
+  }
+  
+  .color-light {
+    color: var(--light-color);
+  }
+  
+  .color-white {
+    color: white;
+  }
+  
+  .color-dark {
+    color: black;
+  }
