@@ -1,4 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { useFirebase, useFirebaseConnect } from "react-redux-firebase";
+import { setCurrentChannel } from "../../redux/actions/channelActions";
 import {
   ChannelItem,
   Channels,
@@ -7,12 +11,47 @@ import {
 } from "./Sidebar.element";
 
 const Sidebar = () => {
+  const { register, errors, handleSubmit, setValue } = useForm();
+  const profile = useSelector((state) => state.firebase.profile);
+  const firebase = useFirebase();
+  const dispatch = useDispatch()
+  
+  useFirebaseConnect([{path: "channels"}]);
+  const channels = useSelector(state => state.firebase.ordered.channels);
+  
+  useEffect(() => {
+    register({ name: "name" }, { required: true });
+    register(
+      { name: "description" },
+      { required: true, minLength: 6, maxLength: 60 }
+    );
+  }, []);
+
+  const onSubmit = ({ name, description }) => {
+    firebase.push("channels", {
+      name,
+      description,
+      createdBy: {
+        name: profile.name,
+        avatar: profile.avatar,
+      },
+    });
+  };
+
+  const setActiveChannel = (channel) => {
+    dispatch(setCurrentChannel(channel));
+  }
+
+  const signOut = () => {
+    firebase.logout();
+  }
+
   const modal = () => {
     return (
       <div
-      className="modal fade"
+        className="modal fade"
         id="exampleModal"
-        tabindex="-1"
+        tabIndex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
@@ -30,18 +69,32 @@ const Sidebar = () => {
               ></button>
             </div>
             <div className="modal-body">
-              <form>
+              <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="mb-3">
-                  <label for="recipient-name" className="col-form-label">
+                  <label htmlFor="recipient-name" className="col-form-label">
                     Channel Name:
                   </label>
-                  <input type="text" className="form-control" placeholder="#Channel Name" />
+                  <input
+                    type="text"
+                    name="name"
+                    onChange={(e) => setValue(e.target.name, e.target.value)}
+                    className="form-control"
+                    placeholder="#Channel Name"
+                    autoComplete="off"
+                  />
                 </div>
                 <div class="mb-3">
-                  <label for="message-text" className="col-form-label">
+                  <label htmlFor="message-text" className="col-form-label">
                     Channel Description:
                   </label>
-                  <input type="text" className="form-control" placeholder="#Channel Description" />
+                  <input
+                    type="text"
+                    name="description"
+                    onChange={(e) => setValue(e.target.name, e.target.value)}
+                    className="form-control"
+                    placeholder="#Channel Description"
+                    autoComplete="off"
+                  />
                 </div>
               </form>
             </div>
@@ -53,8 +106,13 @@ const Sidebar = () => {
               >
                 Close
               </button>
-              <button type="button" className="btn btn-primary">
-                Send message
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleSubmit(onSubmit)}
+                data-bs-dismiss="modal"
+              >
+                Create Channel
               </button>
             </div>
           </div>
@@ -68,13 +126,13 @@ const Sidebar = () => {
       {modal()}
       <div className="container">
         <UserInfo>
-          <span>User Name</span>
-          <button className="btn btn-outline-secondary">
+          <span>{profile?.name}</span>
+          <button className="btn btn-outline-secondary" onClick={() => signOut()}>
             <i className="bi bi-box-arrow-right"></i>
           </button>
         </UserInfo>
         <Channels>
-          <div className="w-100 mb-2 d-flex align-items-center justify-content-between">
+        <div className="w-100 mb-2 d-flex align-items-center justify-content-between">
             <h3>Channels</h3>
             <button
               type="button"
@@ -85,18 +143,14 @@ const Sidebar = () => {
               <i className="bi bi-plus-lg"></i>
             </button>
           </div>
-          <ChannelItem>
-            <i className="bi bi-hash"></i>
-            ChannelItem
-          </ChannelItem>
-          <ChannelItem>
-            <i className="bi bi-hash"></i>
-            ChannelItem
-          </ChannelItem>
-          <ChannelItem>
-            <i className="bi bi-hash"></i>
-            ChannelItem
-          </ChannelItem>
+          {
+            channels?.map(({key, value}) => (
+              <ChannelItem key={key} onClick={() => setActiveChannel({key, ...value})}>
+                <i className="bi bi-hash"></i>
+                {value.name}
+              </ChannelItem>
+            ))
+          }
         </Channels>
       </div>
     </SidebarWrapper>
