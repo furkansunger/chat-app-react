@@ -7,8 +7,8 @@ const Menu = () => {
             <div className="container d-flex justify-content-between align-items-center">
                 <MenuLogo href="/" className="color-white">Let's Chat</MenuLogo>
                 <MenuLinkItems>
-                    <MenuLink className="color-white">Login</MenuLink>
-                    <MenuLink className="color-white">Sign Up</MenuLink>
+                    <MenuLink className="color-white" to="/login">Login</MenuLink>
+                    <MenuLink className="color-white" to="/signup">Sign Up</MenuLink>
                 </MenuLinkItems>
             </div>
         </MenuWrapper>

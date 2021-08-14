@@ -10,7 +10,7 @@ const Header = () => {
                 <div className="row">
                     <div className="col-7 d-flex flex-column justify-content-center align-items-start">
                         <h1 className="mb-3">Message anywhere!</h1>
-                        <LinkButton>Sign Up</LinkButton>
+                        <LinkButton to="/signup">Sign Up</LinkButton>
                     </div>
                     <div className="col-5">
                         <img className="img-fluid" src={chatImg} alt="chat-img" />
