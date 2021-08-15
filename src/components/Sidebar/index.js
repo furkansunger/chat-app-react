@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { useFirebase, useFirebaseConnect } from "react-redux-firebase";
+import { isEmpty, useFirebase, useFirebaseConnect } from "react-redux-firebase";
 import { setCurrentChannel } from "../../redux/actions/channelActions";
 import {
   ChannelItem,
@@ -18,6 +18,16 @@ const Sidebar = () => {
   
   useFirebaseConnect([{path: "channels"}]);
   const channels = useSelector(state => state.firebase.ordered.channels);
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    if (!mounted && !isEmpty(channels)) {
+      const {key, value} = channels[0];
+      dispatch(setCurrentChannel({key, ...value})); 
+      setMounted(true);
+    }
+  })
   
   useEffect(() => {
     register({ name: "name" }, { required: true });

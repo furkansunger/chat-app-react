@@ -27,7 +27,7 @@ const Root = () => {
       if (user) {
         history.push("/chat");
       } else {
-        history.push("/login");
+        history.push("/");
       }
     });
   }, []);
