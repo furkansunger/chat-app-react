@@ -6,6 +6,7 @@ import { setCurrentChannel } from "../../redux/actions/channelActions";
 import {
   ChannelItem,
   Channels,
+  HamburgerButton,
   SidebarWrapper,
   UserInfo,
 } from "./Sidebar.element";
@@ -14,21 +15,21 @@ const Sidebar = () => {
   const { register, errors, handleSubmit, setValue } = useForm();
   const profile = useSelector((state) => state.firebase.profile);
   const firebase = useFirebase();
-  const dispatch = useDispatch()
-  
-  useFirebaseConnect([{path: "channels"}]);
-  const channels = useSelector(state => state.firebase.ordered.channels);
+  const dispatch = useDispatch();
+
+  useFirebaseConnect([{ path: "channels" }]);
+  const channels = useSelector((state) => state.firebase.ordered.channels);
 
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     if (!mounted && !isEmpty(channels)) {
-      const {key, value} = channels[0];
-      dispatch(setCurrentChannel({key, ...value})); 
+      const { key, value } = channels[0];
+      dispatch(setCurrentChannel({ key, ...value }));
       setMounted(true);
     }
-  })
-  
+  });
+
   useEffect(() => {
     register({ name: "name" }, { required: true });
     register(
@@ -50,11 +51,11 @@ const Sidebar = () => {
 
   const setActiveChannel = (channel) => {
     dispatch(setCurrentChannel(channel));
-  }
+  };
 
   const signOut = () => {
     firebase.logout();
-  }
+  };
 
   const modal = () => {
     return (
@@ -134,35 +135,37 @@ const Sidebar = () => {
   return (
     <SidebarWrapper>
       {modal()}
-      <div className="container">
         <UserInfo>
-          <span>{profile?.name}</span>
-          <button className="btn btn-outline-secondary" onClick={() => signOut()}>
+          <span className="d-none d-lg-block d-md-block d-xl-block">{profile?.name}</span>
+          <button
+            className="btn btn-outline-secondary"
+            onClick={() => signOut()}
+          >
             <i className="bi bi-box-arrow-right"></i>
           </button>
         </UserInfo>
         <Channels>
-        <div className="w-100 mb-2 d-flex align-items-center justify-content-between">
-            <h3>Channels</h3>
+          <div className="w-100 mb-2 d-flex align-items-center justify-content-between">
+            <h3 className="d-none d-lg-block d-md-block d-xl-block">Channels</h3>
             <button
               type="button"
-              className="btn btn-secondary"
+              className="btn btn-secondary d-none d-lg-block d-md-block d-xl-block"
               data-bs-toggle="modal"
               data-bs-target="#exampleModal"
             >
               <i className="bi bi-plus-lg"></i>
             </button>
           </div>
-          {
-            channels?.map(({key, value}) => (
-              <ChannelItem key={key} onClick={() => setActiveChannel({key, ...value})}>
-                <i className="bi bi-hash"></i>
-                {value.name}
-              </ChannelItem>
-            ))
-          }
+          {channels?.map(({ key, value }) => (
+            <ChannelItem
+              key={key}
+              onClick={() => setActiveChannel({ key, ...value })}
+            >
+              <i className="bi bi-hash"></i>
+              {value.name}
+            </ChannelItem>
+          ))}
         </Channels>
-      </div>
     </SidebarWrapper>
   );
 };
